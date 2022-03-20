@@ -12,22 +12,11 @@ import java.security.spec.X509EncodedKeySpec;
 public class FilesManager {
 
     public byte[] readFile(String path) {
-        File file = new File(path);
-        FileInputStream fin = null;
         try {
-            fin = new FileInputStream(file);
-            return new byte[(int) file.length()];
+            return Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
-        } finally {
-            try {
-                if (fin != null) {
-                    fin.close();
-                }
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
         }
     }
 
@@ -46,22 +35,6 @@ public class FilesManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void dumpKeyPair(KeyPair keyPair) {
-        PublicKey pub = keyPair.getPublic();
-        System.out.println("Public Key: " + getHexString(pub.getEncoded()));
-
-        PrivateKey priv = keyPair.getPrivate();
-        System.out.println("Private Key: " + getHexString(priv.getEncoded()));
-    }
-
-    private String getHexString(byte[] b) {
-        String result = "";
-        for (int i = 0; i < b.length; i++) {
-            result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
-        }
-        return result;
     }
 
     public void saveKeyPair(String directory, String path, KeyPair keyPair) throws IOException {
